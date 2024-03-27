@@ -1,8 +1,18 @@
+#ifndef _WISP_PACKET_H_
+#define _WISP_PACKET_H_
+
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
 
 #include "wispbuffer.hpp"
+
+enum PacketTypes {
+  CONNECT = 0x01,
+  DATA = 0x02,
+  CONTINUE = 0x03,
+  CLOSE = 0x04
+};
 
 class WispPacket {
   public:
@@ -14,7 +24,7 @@ class WispPacket {
   WispPacket(uint8_t type, uint32_t stream_id, WispBuffer* payload);
   WispPacket(WispBuffer* buffer);
   WispBuffer* pack();
-  void cleanup();
+  ~WispPacket();
 };
 
 class WispPayload {
@@ -32,6 +42,7 @@ class ConnectPayload: public WispPayload {
   ConnectPayload(uint8_t stream_type, uint16_t dest_port, WispBuffer* hostname);
   ConnectPayload(WispBuffer* buffer);
   WispBuffer* pack();
+  ~ConnectPayload();
 };
 
 class ContinuePayload: public WispPayload {
@@ -53,3 +64,5 @@ class ClosePayload: public WispPayload {
   ClosePayload(WispBuffer* buffer);
   WispBuffer* pack();
 };
+
+#endif

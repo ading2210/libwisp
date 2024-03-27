@@ -1,3 +1,6 @@
+#ifndef _WISP_BUFFER_H_
+#define _WISP_BUFFER_H_
+
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
@@ -23,3 +26,5 @@ class WispBuffer {
   WispBuffer* copy_buffer(size_t offset);
   void set_buffer(size_t offset, WispBuffer* value);
 };
+
+#endif

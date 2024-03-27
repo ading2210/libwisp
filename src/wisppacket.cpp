@@ -17,9 +17,8 @@ WispBuffer* WispPacket::pack() {
   buffer->set_buffer(5, this->payload);
   return buffer;
 }
-void WispPacket::cleanup() {
+WispPacket::~WispPacket() {
   delete this->payload;
-  delete this;
 }
 
 ConnectPayload::ConnectPayload(uint8_t stream_type, uint16_t dest_port, WispBuffer* hostname) {
@@ -38,6 +37,9 @@ WispBuffer* ConnectPayload::pack() {
   buffer->set_uint16(1, this->dest_port);
   buffer->set_buffer(3, this->hostname);
   return buffer;
+}
+ConnectPayload::~ConnectPayload() {
+  delete this->hostname;
 }
 
 ContinuePayload::ContinuePayload(uint32_t buffer_remaining) {
