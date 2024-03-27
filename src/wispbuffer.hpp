@@ -8,6 +8,7 @@ class WispBuffer {
   char* content;
 
   WispBuffer(size_t len, char* content = NULL);
+  ~WispBuffer();
 
   uint8_t get_uint8(size_t offset);
   void set_uint8(size_t offset, uint8_t value);

@@ -18,8 +18,8 @@ WispBuffer* WispPacket::pack() {
   return buffer;
 }
 void WispPacket::cleanup() {
-  free(this->payload);
-  free(this);
+  delete this->payload;
+  delete this;
 }
 
 ConnectPayload::ConnectPayload(uint8_t stream_type, uint16_t dest_port, WispBuffer* hostname) {

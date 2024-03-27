@@ -11,6 +11,9 @@ WispBuffer::WispBuffer(size_t len, char* content) {
     this->content = (char*) malloc(len);
   }
 }
+WispBuffer::~WispBuffer() {
+  free(this->content);
+}
 
 uint8_t WispBuffer::get_uint8(size_t offset) {
   return *(uint8_t*)(content + offset);
