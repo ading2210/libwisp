@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <cstring>
 
-#include "wispbuffer.hpp"
+#include "buffer.hpp"
 
 WispBuffer::WispBuffer(size_t len, char* content) {
   this->len = len;

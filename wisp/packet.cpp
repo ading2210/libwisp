@@ -1,4 +1,4 @@
-#include "wisppacket.hpp"
+#include "packet.hpp"
 
 WispPacket::WispPacket(uint8_t type, uint32_t stream_id, WispBuffer* payload) {
   this->type = type;

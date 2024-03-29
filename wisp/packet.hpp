@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <cstring>
 
-#include "wispbuffer.hpp"
+#include "buffer.hpp"
 
 enum PacketTypes {
   CONNECT = 0x01,
@@ -27,12 +27,7 @@ class WispPacket {
   ~WispPacket();
 };
 
-class WispPayload {
-  public:
-  virtual WispBuffer* pack();
-};
-
-class ConnectPayload: public WispPayload {
+class ConnectPayload {
   public:
   static const size_t header_size = sizeof(uint8_t) + sizeof(uint16_t);
   uint8_t stream_type;
@@ -45,7 +40,7 @@ class ConnectPayload: public WispPayload {
   ~ConnectPayload();
 };
 
-class ContinuePayload: public WispPayload {
+class ContinuePayload {
   public:
   static const size_t header_size = sizeof(uint32_t);
   uint32_t buffer_remaining;
@@ -55,7 +50,7 @@ class ContinuePayload: public WispPayload {
   WispBuffer* pack();
 };
 
-class ClosePayload: public WispPayload {
+class ClosePayload {
   public:
   static const size_t header_size = sizeof(uint8_t);
   uint8_t close_reason;

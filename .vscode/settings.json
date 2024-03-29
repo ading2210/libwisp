@@ -1,5 +1,6 @@
 {
   "clangd.fallbackFlags": [
-    "-I${workspaceFolder}/build/prefix/include"
+    "-I${workspaceFolder}/build/prefix/include",
+    "-I${workspaceFolder}"
   ]
 }

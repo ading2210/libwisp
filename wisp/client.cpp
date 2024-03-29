@@ -2,11 +2,11 @@
 #include <ixwebsocket/IXWebSocket.h>
 #include <ixwebsocket/IXWebSocketMessageType.h>
 
-#include "wispconnection.hpp"
-#include "wispbuffer.hpp"
-#include "wisppacket.hpp"
+#include "client.hpp"
+#include "buffer.hpp"
+#include "packet.hpp"
 
-WispStream::WispStream(WispConnection* connection, uint8_t type, uint32_t stream_id) {
+WispStream::WispStream(WispClient* connection, uint8_t type, uint32_t stream_id) {
   this->connection = connection;
   this->type = type;
   this->stream_id = stream_id;
@@ -45,7 +45,7 @@ void WispStream::send_now(WispBuffer* data) {
   delete buffer;
 }
 
-WispConnection::WispConnection(std::string url) {
+WispClient::WispClient(std::string url) {
   this->url = url;
   this->ws.setUrl(url);
   this->ws.setOnMessageCallback([this](const ix::WebSocketMessagePtr& msg){
@@ -53,17 +53,17 @@ WispConnection::WispConnection(std::string url) {
   });
 }
 
-void WispConnection::connect() {
+void WispClient::connect() {
   this->ws.start();
 }
 
-void WispConnection::close() {
+void WispClient::close() {
   this->ws.close();
   this->open = false;
   this->cleanup_all();
 }
 
-void WispConnection::cleanup_all() {
+void WispClient::cleanup_all() {
   std::map<uint32_t, WispStream*>::iterator iterator = this->streams.begin();
   std::vector<uint32_t> stream_ids;
   while (iterator != this->streams.end()) {
@@ -74,7 +74,7 @@ void WispConnection::cleanup_all() {
   }
 }
 
-void WispConnection::close_stream(uint32_t stream_id, uint8_t close_reason) {
+void WispClient::close_stream(uint32_t stream_id, uint8_t close_reason) {
   ClosePayload payload = ClosePayload(close_reason);
   WispPacket packet = WispPacket(PacketTypes::CLOSE, stream_id, payload.pack());
   WispBuffer* buffer = packet.pack();
@@ -83,7 +83,7 @@ void WispConnection::close_stream(uint32_t stream_id, uint8_t close_reason) {
   this->cleanup_stream(stream_id, close_reason);
 }
 
-void WispConnection::cleanup_stream(uint32_t stream_id, uint8_t close_reason) {
+void WispClient::cleanup_stream(uint32_t stream_id, uint8_t close_reason) {
   if (this->streams.count(stream_id) == 0) {
     return;
   }
@@ -93,11 +93,11 @@ void WispConnection::cleanup_stream(uint32_t stream_id, uint8_t close_reason) {
   delete stream;
 }
 
-void WispConnection::ws_send(WispBuffer* buffer) {
+void WispClient::ws_send(WispBuffer* buffer) {
   this->ws.sendBinary(std::string(buffer->content, buffer->len));
 }
 
-void WispConnection::on_ws_event(const ix::WebSocketMessagePtr& msg) {
+void WispClient::on_ws_event(const ix::WebSocketMessagePtr& msg) {
   if (msg->type == ix::WebSocketMessageType::Message) {
     this->on_ws_msg(msg);
   }
@@ -109,7 +109,7 @@ void WispConnection::on_ws_event(const ix::WebSocketMessagePtr& msg) {
   }
 }
 
-void WispConnection::on_ws_msg(const ix::WebSocketMessagePtr& msg) {
+void WispClient::on_ws_msg(const ix::WebSocketMessagePtr& msg) {
   if (!msg->binary) {
     return;
   }
@@ -153,6 +153,6 @@ void WispConnection::on_ws_msg(const ix::WebSocketMessagePtr& msg) {
   delete packet;
 }
 
-void WispConnection::on_ws_close(const ix::WebSocketMessagePtr& msg) {
+void WispClient::on_ws_close(const ix::WebSocketMessagePtr& msg) {
   this->cleanup_all();
 }
