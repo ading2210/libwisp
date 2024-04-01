@@ -19,6 +19,7 @@ class WispStream {
   WispStream(WispClient* connection, uint8_t type, uint32_t stream_id);
   void close(uint8_t reason = 0x01);
   void send(WispBuffer* buffer);
+  void send(std::string& msg);
   void on_continue(uint32_t buffer_remaining);
 
   private:
@@ -34,14 +35,15 @@ class WispClient {
   uint32_t buffer_size;
   WispClient(std::string url);
   WispStream* create_stream(std::string hostname, uint16_t port, uint8_t type = 0x01);
-  std::function<void*(void)> on_open;
-  std::function<void*(int)> on_close;
+  std::function<void(void)> on_open;
+  std::function<void(int)> on_close;
   void close();
   void close_stream(uint32_t stream_id, uint8_t close_reason = 0x01);
   void connect();
   void ws_send(WispBuffer* buffer);
 
   private:
+  uint32_t next_stream_id = 1;
   void cleanup_all();
   void cleanup_stream(uint32_t stream_id, uint8_t close_reason = 0x01);
   bool stream_exists(uint32_t stream_id);

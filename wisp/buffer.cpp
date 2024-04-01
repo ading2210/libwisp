@@ -6,9 +6,9 @@
 
 WispBuffer::WispBuffer(size_t len, char* content) {
   this->len = len;
-  this->content = content;
-  if (content == NULL) {
-    this->content = (char*) malloc(len);
+  this->content = (char*) malloc(len);
+  if (content != NULL) {
+    mempcpy(this->content, content, len);
   }
 }
 WispBuffer::~WispBuffer() {
