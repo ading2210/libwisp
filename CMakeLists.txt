@@ -38,7 +38,7 @@ ExternalProject_Add(
   IXWebSocket
   GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
   CMAKE_ARGS
-		-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/prefix
+    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/prefix
     -DUSE_TLS=1
     -DBUILD_SHARED_LIBS=1
 )

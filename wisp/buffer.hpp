@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <cstring>
 
+namespace wisp {
+
 class WispBuffer {
   public:
   size_t len;
@@ -26,5 +28,7 @@ class WispBuffer {
   WispBuffer* copy_buffer(size_t offset);
   void set_buffer(size_t offset, WispBuffer* value);
 };
+
+}
 
 #endif

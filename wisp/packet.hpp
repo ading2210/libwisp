@@ -7,6 +7,8 @@
 
 #include "buffer.hpp"
 
+namespace wisp {
+
 enum PacketTypes {
   CONNECT = 0x01,
   DATA = 0x02,
@@ -59,5 +61,7 @@ class ClosePayload {
   ClosePayload(WispBuffer* buffer);
   WispBuffer* pack();
 };
+
+}
 
 #endif

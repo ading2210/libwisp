@@ -4,6 +4,8 @@
 
 #include "buffer.hpp"
 
+namespace wisp {
+
 WispBuffer::WispBuffer(size_t len, char* content) {
   this->len = len;
   this->content = (char*) malloc(len);
@@ -46,4 +48,6 @@ WispBuffer* WispBuffer::copy_buffer(size_t offset) {
 }
 void WispBuffer::set_buffer(size_t offset, WispBuffer* value) {
   mempcpy(content + offset, value->content, value->len);
+}
+
 }

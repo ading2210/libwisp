@@ -1,5 +1,7 @@
 #include "packet.hpp"
 
+namespace wisp {
+
 WispPacket::WispPacket(uint8_t type, uint32_t stream_id, WispBuffer* payload) {
   this->type = type;
   this->stream_id = stream_id;
@@ -64,4 +66,6 @@ WispBuffer* ClosePayload::pack() {
   WispBuffer* buffer = new WispBuffer(this->header_size);
   buffer->set_uint8(0, this->close_reason);
   return buffer;
+}
+
 }

@@ -1,12 +1,13 @@
 #include <cstdint>
 #include <cstdio>
-#include <cstring>
 #include <ixwebsocket/IXWebSocket.h>
 #include <ixwebsocket/IXWebSocketMessageType.h>
 
 #include "client.hpp"
 #include "buffer.hpp"
 #include "packet.hpp"
+
+namespace wisp {
 
 WispStream::WispStream(WispClient* connection, uint8_t type, uint32_t stream_id) {
   this->connection = connection;
@@ -33,7 +34,6 @@ void WispStream::send(WispBuffer* data) {
 void WispStream::send(std::string& msg) {
   WispBuffer* buffer = new WispBuffer(msg.size(), msg.data());
   WispStream::send(buffer);
-  //delete buffer;
 }
 
 void WispStream::on_continue(uint32_t buffer_remaining) {
@@ -42,7 +42,6 @@ void WispStream::on_continue(uint32_t buffer_remaining) {
     WispBuffer* data = this->send_queue.front();
     this->send_queue.pop();
     this->send_now(data);
-    delete data;
   }
 }
 
@@ -121,12 +120,10 @@ WispStream* WispClient::create_stream(std::string hostname, uint16_t port, uint8
 }
 
 void WispClient::ws_send(WispBuffer* buffer) {
-  printf("sending %i %s\n", (int) buffer->len, buffer->content);
   this->ws.sendBinary(std::string(buffer->content, buffer->len));
 }
 
 void WispClient::on_ws_event(const ix::WebSocketMessagePtr& msg) {
-  printf("event fired \n");
   if (msg->type == ix::WebSocketMessageType::Message) {
     this->on_ws_msg(msg);
   }
@@ -135,9 +132,6 @@ void WispClient::on_ws_event(const ix::WebSocketMessagePtr& msg) {
   }
   else if (msg->type == ix::WebSocketMessageType::Error) {
     this->on_ws_close(msg);
-  }
-  else {
-    printf("no event handler called\n");
   }
 }
 
@@ -149,14 +143,11 @@ void WispClient::on_ws_msg(const ix::WebSocketMessagePtr& msg) {
   //todo: validate packet lengths
   WispBuffer* buffer = new WispBuffer(msg->str.size(), (char*) msg->str.c_str());
   WispPacket* packet = new WispPacket(buffer);
-
-  printf("%i %i\n", packet->type, packet->stream_id);
   delete buffer;
 
   //stream does not exist
   if (this->streams.count(packet->stream_id) == 0 && packet->stream_id != 0) {
     printf("received packet for stream which doesn't exist.\n");
-    //todo: put console warning here?
   }
 
   //handle first continue packet
@@ -190,4 +181,6 @@ void WispClient::on_ws_msg(const ix::WebSocketMessagePtr& msg) {
 
 void WispClient::on_ws_close(const ix::WebSocketMessagePtr& msg) {
   this->cleanup_all();
+}
+ 
 }

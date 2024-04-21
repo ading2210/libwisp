@@ -5,6 +5,8 @@
 #include <ixwebsocket/IXWebSocket.h>
 #include "buffer.hpp"
 
+namespace wisp {
+
 class WispClient;
 class WispStream {
   public:
@@ -51,5 +53,7 @@ class WispClient {
   void on_ws_msg(const ix::WebSocketMessagePtr& msg);
   void on_ws_close(const ix::WebSocketMessagePtr& msg);
 };
+
+}
 
 #endif
